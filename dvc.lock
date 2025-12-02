@@ -1,0 +1,96 @@
+schema: '2.0'
+stages:
+  data_ingesion:
+    cmd: python src/data_ingesion.py
+    deps:
+    - path: src/data_ingesion.py
+      hash: md5
+      md5: 6afb4b7771a24aef835600a0a1dc0602
+      size: 1850
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: 8420425d330ea7fad3b4272a0e8a6fbc.dir
+      size: 24059
+      nfiles: 1
+  pre_processing:
+    cmd: python src/pre_processing.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: 8420425d330ea7fad3b4272a0e8a6fbc.dir
+      size: 24059
+      nfiles: 1
+    - path: src/pre_processing.py
+      hash: md5
+      md5: e543caf6f1882fb8e21d7e136368c516
+      size: 2520
+    outs:
+    - path: data/split_raw_data
+      hash: md5
+      md5: e9ea6b2a41fe13866f522bc43da062a2.dir
+      size: 24157
+      nfiles: 2
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+    - path: data/split_raw_data
+      hash: md5
+      md5: e9ea6b2a41fe13866f522bc43da062a2.dir
+      size: 24157
+      nfiles: 2
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 26a7b51ae6c3459221894f7c398e234a
+      size: 2878
+    outs:
+    - path: data/processed_data
+      hash: md5
+      md5: 337b3f97a79cb4cde07996dfac122ab0.dir
+      size: 29695
+      nfiles: 2
+  model_training:
+    cmd: python src/model_training.py
+    deps:
+    - path: data/processed_data
+      hash: md5
+      md5: 337b3f97a79cb4cde07996dfac122ab0.dir
+      size: 29695
+      nfiles: 2
+    - path: src/model_training.py
+      hash: md5
+      md5: 557e36f6a0ac512827182e609db3e7c3
+      size: 1978
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: d679658ebe5af860fdfe807b1c524f93
+      size: 3697144
+  evaluating_model:
+    cmd: python src/evaluating_model.py
+    deps:
+    - path: data/processed_data
+      hash: md5
+      md5: 337b3f97a79cb4cde07996dfac122ab0.dir
+      size: 29695
+      nfiles: 2
+    - path: models/model.pkl
+      hash: md5
+      md5: d679658ebe5af860fdfe807b1c524f93
+      size: 3697144
+    - path: src/evaluating_model.py
+      hash: md5
+      md5: aa495b1a1d944e39898a6bb5c2ae8a51
+      size: 3419
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: d53be4e2233903b5d130f7f4c385a939
+      size: 515
+  fast_api:
+    cmd: uvicorn src.frontend:app --reload
+    deps:
+    - path: models/model.pkl
+      hash: md5
+      md5: d679658ebe5af860fdfe807b1c524f93
+      size: 3697144
