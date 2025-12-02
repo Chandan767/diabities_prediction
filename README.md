@@ -99,6 +99,6 @@ cd diabetes-prediction-pipeline
 ---
 
 ## 👨‍💻 Author
-Sunag M P
+Chandan
 - 💼 Machine Learning Engineer
 - 🚀 Skilled in ML, MLOps, LangChain, FastAPI, and automation pipelines.
